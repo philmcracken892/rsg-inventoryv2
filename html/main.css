@@ -1,0 +1,1417 @@
+/* ============================================
+   FONTS
+   ============================================ */
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Unkempt:wght@400;700&display=swap');
+
+@font-face {
+    font-family: 'RDR Lino';
+    src: url('./assets/RDRLino.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* ============================================
+   CSS VARIABLES
+   ============================================ */
+:root {
+    /* Layout */
+    --panel-width: 25vw;
+    --panel-height: 64vh;
+    --panel-gap: 2vw;
+    --panel-padding: 1.2vw;
+    --grid-columns: 5;
+    --slot-gap: 0.4vw;
+    --border-radius: 4px;
+    --scrollbar-w: 6px;
+    
+    /* Colors - Western Leather Satchel Theme */
+    --color-leather-dark: #2a1f1a;
+    --color-leather-medium: #3d2e24;
+    --color-leather-light: #5c4a3d;
+    --color-leather-highlight: #8b7355;
+    
+    --color-bg-dark: #1a1410;
+    --color-bg-medium: #251c16;
+    --color-bg-slot: #2a211a;
+    
+    --color-border-dark: #1a1410;
+    --color-border-medium: #4a3c30;
+    
+    --color-stitch: #c9a227;
+    --color-stitch-dark: #8b7019;
+    
+    --color-gold: #c9a227;
+    --color-gold-light: #dbb84d;
+    --color-gold-dark: #9a7b1c;
+    --color-gold-glow: rgba(201, 162, 39, 0.4);
+    
+    --color-brass: #b5a642;
+    --color-brass-dark: #8b7d32;
+    
+    --color-cream: #e8e0d5;
+    --color-cream-dark: #c4b9a8;
+    --color-parchment: #d4c9b8;
+    
+    --color-success: #7a9a6b;
+    --color-warning: #c9a227;
+    --color-error: #8b4444;
+    
+    /* Shadows */
+    --shadow-panel: 
+        0 8px 32px rgba(0, 0, 0, 0.8),
+        0 0 80px rgba(0, 0, 0, 0.4),
+        inset 0 2px 4px rgba(255, 255, 255, 0.05),
+        inset 0 -4px 8px rgba(0, 0, 0, 0.4);
+    --shadow-slot: 
+        inset 0 2px 6px rgba(0, 0, 0, 0.6),
+        inset 0 0 15px rgba(0, 0, 0, 0.3);
+    --shadow-slot-hover:
+        inset 0 0 20px rgba(201, 162, 39, 0.2),
+        0 0 12px rgba(201, 162, 39, 0.15);
+    --shadow-text: 2px 2px 4px rgba(0, 0, 0, 0.9);
+    
+    /* Transitions */
+    --transition-fast: 0.15s ease;
+    --transition-medium: 0.25s ease;
+}
+
+/* ============================================
+   RESET & BASE
+   ============================================ */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Open Sans", sans-serif;
+    overflow: hidden;
+    user-select: none;
+    -webkit-font-smoothing: antialiased;
+}
+
+#app {
+    height: 100vh;
+    width: 100vw;
+    background: transparent;
+    position: relative;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: var(--scrollbar-w);
+}
+
+::-webkit-scrollbar-track {
+    background: var(--color-leather-dark);
+    border-radius: var(--border-radius);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, 
+        var(--color-leather-light) 0%, 
+        var(--color-leather-medium) 100%
+    );
+    border-radius: var(--border-radius);
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, 
+        var(--color-gold-dark) 0%, 
+        var(--color-gold) 100%
+    );
+}
+
+/* ============================================
+   INVENTORY CONTAINER
+   ============================================ */
+.inventory-container {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: auto;
+}
+
+/* ============================================
+   PANELS WRAPPER - FLEXBOX LAYOUT (THE FIX!)
+   ============================================ */
+.inventory-panels-wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    gap: var(--panel-gap);
+    pointer-events: none;
+}
+
+/* Single panel - centered */
+.inventory-panels-wrapper.single-panel {
+    justify-content: center;
+}
+
+.inventory-panels-wrapper.single-panel .inventory-panel {
+    margin: 0;
+}
+
+/* ============================================
+   INVENTORY PANEL
+   ============================================ */
+.inventory-panel {
+    position: relative;
+    width: var(--panel-width);
+    pointer-events: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-inner {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ============================================
+   PANEL CONTENT - LEATHER SATCHEL STYLE
+   ============================================ */
+.panel-content {
+    position: relative;
+    width: 100%;
+    height: var(--panel-height);
+    background: 
+        /* Leather grain texture */
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 2px,
+            rgba(0, 0, 0, 0.03) 2px,
+            rgba(0, 0, 0, 0.03) 4px
+        ),
+        repeating-linear-gradient(
+            0deg,
+            transparent 0px,
+            transparent 2px,
+            rgba(0, 0, 0, 0.02) 2px,
+            rgba(0, 0, 0, 0.02) 4px
+        ),
+        /* Main leather gradient */
+        linear-gradient(180deg, 
+            var(--color-leather-light) 0%, 
+            var(--color-leather-medium) 5%,
+            var(--color-leather-dark) 15%,
+            var(--color-bg-dark) 40%,
+            var(--color-bg-dark) 60%,
+            var(--color-leather-dark) 85%,
+            var(--color-leather-medium) 95%,
+            var(--color-leather-light) 100%
+        );
+    border: 3px solid var(--color-leather-medium);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-panel);
+    display: flex;
+    flex-direction: column;
+    padding: var(--panel-padding);
+    padding-top: 1vh;
+}
+
+/* Stitching effect - Top */
+.panel-content::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 15px;
+    right: 15px;
+    height: 2px;
+    background: repeating-linear-gradient(
+        90deg,
+        var(--color-stitch) 0px,
+        var(--color-stitch) 8px,
+        transparent 8px,
+        transparent 14px
+    );
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* Stitching effect - Bottom */
+.panel-content::after {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    left: 15px;
+    right: 15px;
+    height: 2px;
+    background: repeating-linear-gradient(
+        90deg,
+        var(--color-stitch) 0px,
+        var(--color-stitch) 8px,
+        transparent 8px,
+        transparent 14px
+    );
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* ============================================
+   DRAG HANDLES - LEATHER STRAP STYLE
+   ============================================ */
+.window-drag-handle {
+    position: relative;
+    width: 100%;
+    height: 3.5vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 3px,
+            rgba(0, 0, 0, 0.05) 3px,
+            rgba(0, 0, 0, 0.05) 6px
+        ),
+        linear-gradient(180deg, 
+            var(--color-leather-highlight) 0%,
+            var(--color-leather-light) 20%,
+            var(--color-leather-medium) 80%,
+            var(--color-leather-dark) 100%
+        );
+    border: 2px solid var(--color-leather-medium);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    box-shadow: 
+        inset 0 2px 4px rgba(255, 255, 255, 0.1),
+        0 -2px 8px rgba(0, 0, 0, 0.3);
+    transition: background var(--transition-fast);
+}
+
+.window-drag-handle:hover {
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 3px,
+            rgba(0, 0, 0, 0.05) 3px,
+            rgba(0, 0, 0, 0.05) 6px
+        ),
+        linear-gradient(180deg, 
+            var(--color-gold-dark) 0%,
+            var(--color-leather-highlight) 20%,
+            var(--color-leather-light) 80%,
+            var(--color-leather-medium) 100%
+        );
+}
+
+.window-drag-handle:active {
+    cursor: grabbing;
+}
+
+.window-drag-handle i {
+    color: var(--color-cream-dark);
+    font-size: 1.2vh;
+    opacity: 0.6;
+    transition: all var(--transition-fast);
+}
+
+.window-drag-handle:hover i {
+    opacity: 1;
+    color: var(--color-gold);
+}
+
+/* Brass Rivets on handle */
+.handle-rivet {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: radial-gradient(circle at 30% 30%, 
+        var(--color-brass) 0%, 
+        var(--color-brass-dark) 60%,
+        #5a4a22 100%
+    );
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    box-shadow: 
+        inset 0 1px 2px rgba(255, 255, 255, 0.4),
+        0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.handle-rivet.left {
+    left: 15%;
+}
+
+.handle-rivet.right {
+    right: 15%;
+}
+
+/* ============================================
+   INVENTORY HEADER
+   ============================================ */
+.inventory-header {
+    width: 100%;
+    margin-bottom: 0.8vh;
+}
+
+.labels-container {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.8vw;
+    padding: 0.5vh 0.5vw;
+    background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(0, 0, 0, 0.3) 20%,
+        rgba(0, 0, 0, 0.3) 80%,
+        transparent 100%
+    );
+    border-radius: var(--border-radius);
+}
+
+.inventory-label {
+    flex: 1;
+}
+
+.inventory-label p {
+    margin: 0;
+    font-family: 'RDR Lino', serif;
+    font-size: clamp(1rem, 2vh, 1.4rem);
+    color: var(--color-gold);
+    text-shadow: 
+        0 0 20px var(--color-gold-glow),
+        var(--shadow-text);
+    letter-spacing: 0.15em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.current-weight,
+.current-id,
+.current-money {
+    display: flex;
+    align-items: center;
+    gap: 0.4vw;
+    padding: 0.3vh 0.6vw;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(139, 115, 85, 0.2);
+}
+
+.current-weight p,
+.current-id p,
+.current-money p {
+    margin: 0;
+    font-family: 'Unkempt', cursive;
+    font-size: clamp(0.7rem, 1.3vh, 0.9rem);
+    color: var(--color-cream);
+    text-shadow: var(--shadow-text);
+    white-space: nowrap;
+}
+
+.current-money p {
+    color: var(--color-gold-light);
+}
+
+.weight-icon,
+.id-icon,
+.money-icon {
+    width: clamp(14px, 2vh, 20px);
+    height: clamp(14px, 2vh, 20px);
+    filter: drop-shadow(0 0 4px var(--color-gold-glow));
+    opacity: 0.9;
+}
+
+/* ============================================
+   DIVIDER - LEATHER SEAM STYLE
+   ============================================ */
+.divider {
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--color-leather-dark) 5%,
+        var(--color-stitch-dark) 20%,
+        var(--color-stitch) 50%, 
+        var(--color-stitch-dark) 80%,
+        var(--color-leather-dark) 95%,
+        transparent 100%
+    );
+    margin-bottom: 0.8vh;
+    position: relative;
+}
+
+.divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    transform: translateY(-50%);
+    background: repeating-linear-gradient(
+        90deg,
+        transparent 0px,
+        transparent 4px,
+        var(--color-gold) 4px,
+        var(--color-gold) 10px,
+        transparent 10px,
+        transparent 16px
+    );
+    opacity: 0.4;
+}
+
+/* ============================================
+   INVENTORY GRID
+   ============================================ */
+.inventory-grid {
+    flex: 1;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding-right: 0.3vw;
+}
+
+.item-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--grid-columns), 1fr);
+    gap: var(--slot-gap);
+    padding: var(--slot-gap);
+    align-content: start;
+}
+
+/* ============================================
+   ITEM SLOTS - LEATHER POCKET STYLE
+   ============================================ */
+.item-slot {
+    position: relative;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: 
+        radial-gradient(ellipse at center, 
+            var(--color-bg-dark) 0%, 
+            var(--color-leather-dark) 100%
+        );
+    border: 2px solid var(--color-leather-medium);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-slot);
+    transition: 
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast),
+        background var(--transition-fast);
+    cursor: pointer;
+}
+
+.item-slot::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--border-radius);
+    border: 1px solid rgba(255, 255, 255, 0.03);
+    pointer-events: none;
+}
+
+.item-slot:hover {
+    border-color: var(--color-gold-dark);
+    box-shadow: var(--shadow-slot-hover);
+    background: 
+        radial-gradient(ellipse at center, 
+            rgba(201, 162, 39, 0.1) 0%, 
+            var(--color-bg-dark) 60%,
+            var(--color-leather-dark) 100%
+        );
+}
+
+.item-slot.selected,
+.item-slot:active {
+    border-color: var(--color-gold);
+    box-shadow: 
+        var(--shadow-slot-hover),
+        0 0 20px var(--color-gold-glow);
+}
+
+.item-slot.invalid-slot-highlight {
+    border-color: var(--color-error) !important;
+    box-shadow: 
+        inset 0 0 20px rgba(139, 68, 68, 0.3),
+        0 0 15px rgba(139, 68, 68, 0.4) !important;
+    animation: slot-error 0.3s ease;
+}
+
+@keyframes slot-error {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-3px); }
+    75% { transform: translateX(3px); }
+}
+
+/* Slot Key Number - Brass Rivet Style */
+.item-slot-key {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 1.6vh;
+    height: 1.6vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at 30% 30%, 
+        var(--color-brass) 0%, 
+        var(--color-brass-dark) 60%,
+        #5a4a22 100%
+    );
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    box-shadow: 
+        inset 0 1px 2px rgba(255, 255, 255, 0.4),
+        0 2px 4px rgba(0, 0, 0, 0.6);
+    z-index: 2;
+}
+
+.item-slot-key p {
+    margin: 0;
+    font-size: 0.8vh;
+    font-weight: 700;
+    color: var(--color-bg-dark);
+    line-height: 1;
+}
+
+/* Slot Image */
+.item-slot-img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    padding: 10%;
+}
+
+.item-slot-img img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.7));
+    transition: transform var(--transition-fast);
+}
+
+.item-slot:hover .item-slot-img img {
+    transform: scale(1.08);
+}
+
+/* Slot Amount */
+.item-slot-amount {
+    position: absolute;
+    top: 3px;
+    right: 4px;
+    z-index: 2;
+}
+
+.item-slot-amount p {
+    margin: 0;
+    font-size: 0.95vh;
+    font-weight: 700;
+    color: var(--color-cream);
+    text-shadow: 
+        1px 1px 2px rgba(0, 0, 0, 0.95),
+        0 0 8px rgba(0, 0, 0, 0.7);
+    white-space: nowrap;
+}
+
+.item-slot-amount.text-red p {
+    color: var(--color-error);
+}
+
+/* Slot Durability Bar */
+.item-slot-durability {
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 4px;
+    background: var(--color-bg-dark);
+    border: 1px solid var(--color-leather-medium);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.item-slot-durability-fill {
+    height: 100%;
+    transition: width var(--transition-medium);
+    border-radius: 1px;
+}
+
+.item-slot-durability-fill.high {
+    background: linear-gradient(90deg, #5a7a4a, var(--color-success), #5a7a4a);
+    box-shadow: 0 0 6px rgba(122, 154, 107, 0.6);
+}
+
+.item-slot-durability-fill.medium {
+    background: linear-gradient(90deg, var(--color-gold-dark), var(--color-gold), var(--color-gold-dark));
+    box-shadow: 0 0 6px var(--color-gold-glow);
+}
+
+.item-slot-durability-fill.low {
+    background: linear-gradient(90deg, #6b3333, var(--color-error), #6b3333);
+    box-shadow: 0 0 6px rgba(139, 68, 68, 0.6);
+}
+
+/* Item Label */
+.item-slot-label {
+    position: absolute;
+    bottom: 2px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    padding: 0 2px;
+}
+
+.item-slot-label p {
+    margin: 0;
+    font-size: 0.7vh;
+    font-weight: 600;
+    color: var(--color-cream);
+    text-transform: uppercase;
+    text-shadow: var(--shadow-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Shop Price Tags */
+.item-price,
+.item-sell-price {
+    position: absolute;
+    font-size: 0.85vh;
+    font-weight: 700;
+    text-shadow: var(--shadow-text);
+    z-index: 2;
+}
+
+.item-price {
+    top: 3px;
+    left: 3px;
+    color: var(--color-gold);
+}
+
+.item-price p,
+.item-sell-price p {
+    margin: 0;
+}
+
+.item-sell-price {
+    bottom: 3px;
+    left: 3px;
+    color: var(--color-success);
+    font-size: 0.75vh;
+}
+
+/* ============================================
+   CLOSE BUTTON - BRASS BUCKLE STYLE
+   ============================================ */
+.close-btn {
+    width: 100%;
+    height: 4vh;
+    margin-top: 0.8vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'RDR Lino', serif;
+    font-size: clamp(0.85rem, 1.5vh, 1.1rem);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-cream);
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 3px,
+            rgba(0, 0, 0, 0.03) 3px,
+            rgba(0, 0, 0, 0.03) 6px
+        ),
+        linear-gradient(180deg, 
+            var(--color-leather-highlight) 0%,
+            var(--color-leather-light) 15%,
+            var(--color-leather-medium) 50%, 
+            var(--color-leather-dark) 85%,
+            var(--color-leather-medium) 100%
+        );
+    border: 2px solid var(--color-leather-medium);
+    border-radius: var(--border-radius);
+    box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.1),
+        inset 0 -2px 4px rgba(0, 0, 0, 0.3),
+        0 4px 12px rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    text-shadow: var(--shadow-text);
+    transition: all var(--transition-fast);
+}
+
+.close-btn:hover {
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 3px,
+            rgba(0, 0, 0, 0.03) 3px,
+            rgba(0, 0, 0, 0.03) 6px
+        ),
+        linear-gradient(180deg, 
+            var(--color-gold) 0%, 
+            var(--color-gold-dark) 30%,
+            var(--color-brass-dark) 70%,
+            var(--color-gold-dark) 100%
+        );
+    color: var(--color-bg-dark);
+    border-color: var(--color-gold);
+    text-shadow: none;
+    box-shadow: 
+        inset 0 1px 0 rgba(255, 255, 255, 0.3),
+        0 0 25px var(--color-gold-glow);
+    transform: translateY(-2px);
+}
+
+.close-btn:active {
+    transform: translateY(1px);
+}
+
+/* ============================================
+   TRANSFER AMOUNT INPUT
+   ============================================ */
+.input-container {
+    margin-top: 1vh;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0.8vh 1vw;
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 2px,
+            rgba(0, 0, 0, 0.03) 2px,
+            rgba(0, 0, 0, 0.03) 4px
+        ),
+        linear-gradient(145deg, 
+            var(--color-leather-light) 0%, 
+            var(--color-leather-medium) 50%,
+            var(--color-leather-dark) 100%
+        );
+    border: 2px solid var(--color-leather-medium);
+    border-top: 3px solid var(--color-brass);
+    border-radius: var(--border-radius);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
+}
+
+.input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 0.5vw;
+}
+
+.input-container input {
+    flex: 1;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid var(--color-leather-medium);
+    border-radius: var(--border-radius);
+    outline: none;
+    color: var(--color-gold);
+    font-family: 'Unkempt', cursive;
+    font-size: clamp(0.9rem, 1.6vh, 1.1rem);
+    text-align: center;
+    padding: 0.4vh 0.5vw;
+}
+
+.input-container input:focus {
+    border-color: var(--color-gold-dark);
+    box-shadow: 0 0 10px var(--color-gold-glow);
+}
+
+.input-container input::placeholder {
+    color: var(--color-cream-dark);
+    opacity: 0.6;
+}
+
+.input-container input::-webkit-outer-spin-button,
+.input-container input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.input-container input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.clear-button {
+    padding: 0.5vh 0.7vh;
+    background: radial-gradient(circle at 30% 30%, 
+        var(--color-brass) 0%, 
+        var(--color-brass-dark) 60%,
+        #5a4a22 100%
+    );
+    border: 1px solid var(--color-brass-dark);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    box-shadow: 
+        inset 0 1px 2px rgba(255, 255, 255, 0.3),
+        0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.clear-button:hover {
+    background: radial-gradient(circle at 30% 30%, 
+        var(--color-gold-light) 0%, 
+        var(--color-gold) 60%,
+        var(--color-gold-dark) 100%
+    );
+    transform: scale(1.1);
+}
+
+.clear-button i {
+    font-size: 0.9vh;
+    color: var(--color-bg-dark);
+}
+
+/* ============================================
+   TOOLTIP / ITEM INFO
+   ============================================ */
+.item-info-container {
+    position: fixed;
+    width: auto;
+    min-width: 12vw;
+    max-width: 22vw;
+    max-height: 24vh;
+    padding: 1vh 1.2vw;
+    background: 
+        repeating-linear-gradient(
+            0deg,
+            transparent 0px,
+            transparent 2px,
+            rgba(139, 115, 85, 0.02) 2px,
+            rgba(139, 115, 85, 0.02) 4px
+        ),
+        linear-gradient(145deg, 
+            var(--color-parchment) 0%, 
+            var(--color-cream-dark) 50%,
+            var(--color-parchment) 100%
+        );
+    border: 2px solid var(--color-leather-medium);
+    border-radius: var(--border-radius);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.9);
+    z-index: 10000;
+    pointer-events: none;
+    animation: tooltip-appear 0.15s ease-out;
+}
+
+@keyframes tooltip-appear {
+    from {
+        opacity: 0;
+        transform: translateY(5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.item-info-header h3 {
+    margin: 0 0 0.6vh 0;
+    font-family: 'RDR Lino', serif;
+    font-size: clamp(0.9rem, 1.5vh, 1.1rem);
+    color: var(--color-leather-dark);
+    text-align: center;
+    letter-spacing: 0.1em;
+}
+
+.tooltip-divider {
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent 0%, 
+        var(--color-leather-medium) 20%,
+        var(--color-leather-dark) 50%, 
+        var(--color-leather-medium) 80%,
+        transparent 100%
+    );
+    margin: 0.6vh 0;
+}
+
+.item-info-content {
+    font-family: 'Unkempt', cursive;
+    font-size: clamp(0.7rem, 1vh, 0.85rem);
+    color: var(--color-leather-dark);
+    line-height: 1.5;
+}
+
+.item-info-content p {
+    margin: 0.3vh 0;
+}
+
+.item-info-stats {
+    margin-top: 0.6vh;
+    padding-top: 0.6vh;
+    border-top: 1px solid var(--color-leather-medium);
+}
+
+.tooltip-weight {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.5vh;
+    margin-top: 0.8vh;
+    padding-top: 0.6vh;
+    border-top: 1px solid var(--color-leather-medium);
+    font-family: 'Unkempt', cursive;
+    font-size: clamp(0.65rem, 0.9vh, 0.8rem);
+    color: var(--color-leather-medium);
+}
+
+.tooltip-weight-icon {
+    width: 1.8vh;
+    height: 1.8vh;
+    opacity: 0.8;
+    filter: sepia(1) brightness(0.6);
+}
+
+/* ============================================
+   CONTEXT MENU
+   ============================================ */
+.context-menu {
+    position: absolute;
+    min-width: 130px;
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 2px,
+            rgba(0, 0, 0, 0.03) 2px,
+            rgba(0, 0, 0, 0.03) 4px
+        ),
+        linear-gradient(180deg, 
+            var(--color-leather-light) 0%, 
+            var(--color-leather-medium) 10%,
+            var(--color-leather-dark) 90%,
+            var(--color-leather-medium) 100%
+        );
+    border: 2px solid var(--color-leather-medium);
+    border-top: 3px solid var(--color-brass);
+    border-radius: var(--border-radius);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.9);
+    list-style: none;
+    z-index: 1000;
+    padding: 0;
+    margin: 0;
+    animation: context-appear 0.12s ease-out;
+}
+
+@keyframes context-appear {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.context-menu > li {
+    position: relative;
+    padding: 0.9vh 1.4vw;
+    font-family: 'RDR Lino', serif;
+    font-size: clamp(0.8rem, 1.2vh, 0.95rem);
+    color: var(--color-cream);
+    cursor: pointer;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    white-space: nowrap;
+    text-shadow: var(--shadow-text);
+}
+
+.context-menu > li:last-child {
+    border-bottom: none;
+}
+
+.context-menu > li:hover {
+    background: linear-gradient(90deg, 
+        rgba(201, 162, 39, 0.15) 0%, 
+        rgba(201, 162, 39, 0.3) 50%, 
+        rgba(201, 162, 39, 0.15) 100%
+    );
+    color: var(--color-gold);
+}
+
+.submenu-arrow {
+    font-size: 0.8vh;
+    margin-left: 1vw;
+    opacity: 0.6;
+}
+
+.context-menu > li:hover .submenu-arrow {
+    opacity: 1;
+    color: var(--color-gold);
+}
+
+.submenu {
+    position: absolute;
+    left: 100%;
+    top: -3px;
+    min-width: 110px;
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 2px,
+            rgba(0, 0, 0, 0.03) 2px,
+            rgba(0, 0, 0, 0.03) 4px
+        ),
+        linear-gradient(180deg, 
+            var(--color-leather-light) 0%, 
+            var(--color-leather-medium) 10%,
+            var(--color-leather-dark) 90%,
+            var(--color-leather-medium) 100%
+        );
+    border: 2px solid var(--color-leather-medium);
+    border-radius: var(--border-radius);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    z-index: 1001;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-10px);
+    transition: all 0.15s ease;
+}
+
+.context-menu > li.has-submenu:hover > .submenu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(0);
+}
+
+.submenu > li {
+    padding: 0.8vh 1.2vw;
+    font-family: 'RDR Lino', serif;
+    font-size: clamp(0.75rem, 1.1vh, 0.9rem);
+    color: var(--color-cream);
+    cursor: pointer;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    text-shadow: var(--shadow-text);
+}
+
+.submenu > li:last-child {
+    border-bottom: none;
+}
+
+.submenu > li:hover {
+    background: linear-gradient(90deg, 
+        rgba(201, 162, 39, 0.15) 0%, 
+        rgba(201, 162, 39, 0.3) 50%, 
+        rgba(201, 162, 39, 0.15) 100%
+    );
+    color: var(--color-gold);
+}
+
+/* ============================================
+   HOTBAR
+   ============================================ */
+.hotbar-container {
+    position: fixed;
+    bottom: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+}
+
+.hotbar {
+    display: flex;
+    gap: 0.8vw;
+    padding: 1vh 1.5vw;
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 2px,
+            rgba(0, 0, 0, 0.03) 2px,
+            rgba(0, 0, 0, 0.03) 4px
+        ),
+        linear-gradient(180deg, 
+            var(--color-leather-light) 0%,
+            var(--color-leather-medium) 10%, 
+            var(--color-leather-dark) 90%,
+            var(--color-leather-medium) 100%
+        );
+    border: 2px solid var(--color-leather-medium);
+    border-radius: var(--border-radius);
+    box-shadow: 
+        0 8px 40px rgba(0, 0, 0, 0.7),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    position: relative;
+}
+
+.hotbar::before {
+    content: '';
+    position: absolute;
+    top: 6px;
+    left: 15px;
+    right: 15px;
+    height: 1px;
+    background: repeating-linear-gradient(
+        90deg,
+        var(--color-stitch) 0px,
+        var(--color-stitch) 6px,
+        transparent 6px,
+        transparent 12px
+    );
+    opacity: 0.5;
+}
+
+.hotbar .item-slot {
+    width: 5vw;
+    min-width: 50px;
+    max-width: 70px;
+}
+
+.hotbar .item-slot-label {
+    bottom: -1.8vh;
+}
+
+/* ============================================
+   NOTIFICATION / ITEM BOX
+   ============================================ */
+.notification-container {
+    position: fixed;
+    top: 50%;
+    right: 2vw;
+    transform: translateY(-50%);
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.item-box {
+    display: flex;
+    align-items: center;
+    gap: 1vw;
+    padding: 1.2vh 1.5vw;
+    min-width: 14vw;
+    max-width: 22vw;
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 2px,
+            rgba(0, 0, 0, 0.03) 2px,
+            rgba(0, 0, 0, 0.03) 4px
+        ),
+        linear-gradient(145deg, 
+            var(--color-leather-light) 0%, 
+            var(--color-leather-medium) 30%,
+            var(--color-leather-dark) 100%
+        );
+    border: 2px solid var(--color-leather-medium);
+    border-left: 4px solid var(--color-brass);
+    border-radius: var(--border-radius);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8);
+    animation: notification-slide 0.3s ease-out;
+}
+
+@keyframes notification-slide {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.item-box-icon {
+    position: relative;
+    flex-shrink: 0;
+    width: 5vh;
+    height: 5vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: 
+        radial-gradient(ellipse at center, 
+            var(--color-bg-dark) 0%, 
+            var(--color-leather-dark) 100%
+        );
+    border: 2px solid var(--color-leather-medium);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-slot);
+}
+
+.item-box-icon img {
+    width: 80%;
+    height: 80%;
+    object-fit: contain;
+}
+
+.item-box-amount {
+    position: absolute;
+    top: 2px;
+    right: 3px;
+    font-size: 0.9vh;
+    font-weight: 700;
+    color: var(--color-gold);
+    text-shadow: var(--shadow-text);
+}
+
+.item-box-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3vh;
+    min-width: 0;
+}
+
+.item-box-type {
+    font-family: 'RDR Lino', serif;
+    font-size: clamp(0.65rem, 0.9vh, 0.8rem);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-cream-dark);
+    text-shadow: var(--shadow-text);
+}
+
+.item-box-type.type-received {
+    color: var(--color-success);
+}
+
+.item-box-type.type-removed,
+.item-box-type.type-used {
+    color: var(--color-error);
+}
+
+.item-box-divider {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, 
+        var(--color-brass-dark) 0%, 
+        var(--color-brass) 50%,
+        var(--color-brass-dark) 100%
+    );
+}
+
+.item-box-header h4 {
+    margin: 0;
+    font-family: 'Unkempt', cursive;
+    font-size: clamp(0.8rem, 1.2vh, 0.95rem);
+    font-weight: 600;
+    color: var(--color-gold);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-shadow: var(--shadow-text);
+}
+
+.item-box-description {
+    font-size: clamp(0.65rem, 0.9vh, 0.8rem);
+    color: var(--color-cream);
+    line-height: 1.4;
+}
+
+.item-box-description p {
+    margin: 0;
+}
+
+/* ============================================
+   REQUIRED ITEMS
+   ============================================ */
+.required-item-container {
+    position: fixed;
+    bottom: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+}
+
+.required-item {
+    display: flex;
+    gap: 0.8vw;
+    padding: 1vh 1.5vw;
+    background: 
+        repeating-linear-gradient(
+            90deg,
+            transparent 0px,
+            transparent 2px,
+            rgba(0, 0, 0, 0.03) 2px,
+            rgba(0, 0, 0, 0.03) 4px
+        ),
+        linear-gradient(180deg, 
+            var(--color-leather-light) 0%, 
+            var(--color-leather-medium) 10%,
+            var(--color-leather-dark) 90%,
+            var(--color-leather-medium) 100%
+        );
+    border: 2px solid var(--color-leather-medium);
+    border-radius: var(--border-radius);
+    box-shadow: 0 8px 40px rgba(0, 0, 0, 0.7);
+}
+
+/* ============================================
+   DRAGGED ITEM GHOST
+   ============================================ */
+.dragged-item {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.9;
+    transform: scale(1.08);
+    box-shadow: 
+        0 0 30px rgba(0, 0, 0, 0.8),
+        0 0 60px rgba(201, 162, 39, 0.2);
+}
+
+/* ============================================
+   UTILITY
+   ============================================ */
+.custom-tooltip {
+    display: none !important;
+}
+
+.inventory-container.dragging * {
+    transition: none !important;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 1400px) {
+    :root {
+        --panel-width: 28vw;
+        --panel-gap: 1.5vw;
+    }
+}
+
+@media (max-width: 1200px) {
+    :root {
+        --panel-width: 32vw;
+        --grid-columns: 4;
+    }
+}
+
+@media (min-aspect-ratio: 21/9) {
+    :root {
+        --panel-width: 20vw;
+    }
+}
